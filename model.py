@@ -1,11 +1,17 @@
 from __future__ import print_function, division
 
+# data science imports
+import pandas as pd
+import numpy as np
+import csv
+
 # pytorch imports
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.optim import lr_scheduler
 from torch.autograd import Variable
+
 import torchvision
 from torchvision import datasets, models, transforms
 from torch.utils.data import Dataset, DataLoader
@@ -20,11 +26,6 @@ import os
 import time
 from shutil import copyfile
 from shutil import rmtree
-
-# data science imports
-import pandas as pd
-import numpy as np
-import csv
 
 import cxr_dataset as CXR
 import eval_model as E
@@ -125,7 +126,7 @@ def train_model(
                     loss.backward()
                     optimizer.step()
 
-                running_loss += loss.data[0] * batch_size
+                running_loss += loss.item() * batch_size
 
             epoch_loss = running_loss / dataset_sizes[phase]
 
@@ -221,7 +222,7 @@ def train_cnn(PATH_TO_IMAGES, LR, WEIGHT_DECAY):
     data_transforms = {
         'train': transforms.Compose([
             transforms.RandomHorizontalFlip(),
-            transforms.Scale(224),
+            transforms.Resize(224),
             # because scale doesn't always give 224 x 224, this ensures 224 x
             # 224
             transforms.CenterCrop(224),
@@ -229,7 +230,7 @@ def train_cnn(PATH_TO_IMAGES, LR, WEIGHT_DECAY):
             transforms.Normalize(mean, std)
         ]),
         'val': transforms.Compose([
-            transforms.Scale(224),
+            transforms.Resize(224),
             transforms.CenterCrop(224),
             transforms.ToTensor(),
             transforms.Normalize(mean, std)

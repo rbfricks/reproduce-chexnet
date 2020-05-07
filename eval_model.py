@@ -1,13 +1,17 @@
-import torch
 import pandas as pd
-import cxr_dataset as CXR
-from torchvision import transforms, utils
+import numpy as np
+
+import torch
 from torch.utils.data import Dataset, DataLoader
+from torch.autograd import Variable
+
 from torchvision import transforms, utils
+from torchvision import transforms, utils
+
 import sklearn
 import sklearn.metrics as sklm
-from torch.autograd import Variable
-import numpy as np
+
+import cxr_dataset as CXR
 
 
 def make_pred_multilabel(data_transforms, model, PATH_TO_IMAGES):
@@ -99,11 +103,11 @@ def make_pred_multilabel(data_transforms, model, PATH_TO_IMAGES):
         thisrow = {}
         thisrow['label'] = column
         thisrow['auc'] = np.nan
-        try:
-            thisrow['auc'] = sklm.roc_auc_score(
+        # try:
+        thisrow['auc'] = sklm.roc_auc_score(
                 actual.as_matrix().astype(int), pred.as_matrix())
-        except BaseException:
-            print("can't calculate auc for " + str(column))
+        # except BaseException:
+            # print("can't calculate auc for " + str(column))
         auc_df = auc_df.append(thisrow, ignore_index=True)
 
     pred_df.to_csv("results/preds.csv", index=False)
