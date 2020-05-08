@@ -56,5 +56,5 @@ data_transforms = {
         ]),
     }
 
-print('everything defined')
+print('Making predictions...')
 make_pred_multilabel(data_transforms, model, PATH_TO_IMAGES)
